@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="Directory.Build.props" />
+  </Folder>
+  <Project Path="src/Mauren.Extensions.Plugins.Abstractions/Mauren.Extensions.Plugins.Abstractions.csproj" />
+  <Project Path="src/Mauren.Extensions.Plugins.Hosting/Mauren.Extensions.Plugins.Hosting.csproj" />
+  <Project Path="src/Mauren.Extensions.Plugins/Mauren.Extensions.Plugins.csproj" />
+</Solution>
