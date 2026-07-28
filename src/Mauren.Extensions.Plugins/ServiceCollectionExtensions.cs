@@ -103,7 +103,11 @@ namespace Microsoft.Extensions.DependencyInjection
                 // Construct a plugin loader instance and return it
                 return new PluginLoader<TContract>(logger, pluginLoadContextFactory, pluginTypeDiscoverer, pluginContainerFactory, serviceRegistrationStrategy, hostProvider, hostServiceDescriptors);
             });
-
+            // Try to add the non-generic plugin loader as a singleton service
+            services.TryAddSingleton<IPluginLoader>((IServiceProvider serviceProvider) =>
+            {
+                return serviceProvider.GetRequiredService<IPluginLoader<TContract>>();
+            });
             // Return the service collection for chaining
             return services;
         }

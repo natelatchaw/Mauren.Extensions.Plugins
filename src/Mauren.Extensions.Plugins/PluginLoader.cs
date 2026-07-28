@@ -113,7 +113,7 @@ namespace Mauren.Extensions.Plugins
         }
 
         /// <inheritdoc/>
-        Task IPluginLoader<TContract>.ScanAsync(DirectoryInfo directory, CancellationToken cancellationToken)
+        Task IPluginLoader.ScanAsync(DirectoryInfo directory, CancellationToken cancellationToken)
         {
             // If the provided directory does not exist, create it
             if (directory.Exists is false) directory.Create();
