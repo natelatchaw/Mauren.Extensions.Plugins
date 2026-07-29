@@ -34,6 +34,50 @@ namespace Mauren.Extensions.Plugins.Abstractions
         /// A <see cref="Task"/> that represents the asynchronous scan and load operation.
         /// </returns>
         Task ScanAsync(DirectoryInfo directory, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Asynchronously scans the specified file for an assembly containing valid plugin
+        /// types and initializes it in an isolated context.
+        /// </summary>
+        /// 
+        /// <param name="fileInfo">
+        /// The file to scan for an assembly.
+        /// </param>
+        /// 
+        /// <param name="cancellationToken">
+        /// A token to monitor for cancellation requests.
+        /// </param>
+        /// 
+        /// <returns>
+        /// A <see cref="Task"/> that represents the asynchronous scan and load operation,
+        /// containing the <see cref="String"/> identifier of the loaded context.
+        /// </returns>
+        /// 
+        /// <exception cref="Exception">
+        /// Thrown if the load operation failed for the provided <paramref name="fileInfo"/>.
+        /// </exception>
+        Task<String> LoadAsync(FileInfo fileInfo, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Asynchronously unloads the isolated plugin context specified by its identifier.
+        /// </summary>
+        /// 
+        /// <param name="id">
+        /// The identifier of the loaded plugin context.
+        /// </param>
+        /// 
+        /// <param name="cancellationToken">
+        /// A token to monitor for cancellation requests.
+        /// </param>
+        /// 
+        /// <returns>
+        /// A <see cref="Task"/> that represents the asynchronous unload operation.
+        /// </returns>
+        /// 
+        /// <exception cref="Exception">
+        /// Thrown if the unload operation failed for the provided <paramref name="id"/>.
+        /// </exception>
+        Task UnloadAsync(String id, CancellationToken cancellationToken = default);
     }
 
     /// <summary>

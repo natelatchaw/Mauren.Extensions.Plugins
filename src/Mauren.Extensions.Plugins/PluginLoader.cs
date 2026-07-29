@@ -113,6 +113,51 @@ namespace Mauren.Extensions.Plugins
         }
 
         /// <inheritdoc/>
+        Task<String> IPluginLoader.LoadAsync(FileInfo file, CancellationToken cancellationToken)
+        {
+            try
+            {
+                // Create a plugin context for the provided file
+                IPluginContext<TContract> context = CreatePluginContext(file);
+
+                // Register the created plugin context
+                Load(context);
+
+                // Return a task with the plugin context's identifier
+                return Task.FromResult<String>(context.Id);
+            }
+            catch (Exception exception)
+            {
+                if (_logger.IsEnabled(LogLevel.Warning))
+                    _logger.Log(LogLevel.Warning, exception, "Failed to load plugin context from candidate file '{fileName}'", file.Name);
+
+                // Return null
+                return Task.FromException<String>(exception);
+            }
+        }
+
+        /// <inheritdoc/>
+        Task IPluginLoader.UnloadAsync(String id, CancellationToken cancellationToken)
+        {
+            try
+            {
+                // Unregister the plugin context referenced by ID
+                Unload(id);
+
+                // Return a task
+                return Task.CompletedTask;
+            }
+            catch (Exception exception)
+            {
+                if (_logger.IsEnabled(LogLevel.Warning))
+                    _logger.Log(LogLevel.Warning, exception, "Failed to unload plugin context with id '{id}'", id);
+
+                // Return null
+                return Task.FromException<String>(exception);
+            }
+        }
+
+        /// <inheritdoc/>
         Task IPluginLoader.ScanAsync(DirectoryInfo directory, CancellationToken cancellationToken)
         {
             // If the provided directory does not exist, create it
@@ -133,7 +178,7 @@ namespace Mauren.Extensions.Plugins
                 try
                 {
                     // Create a plugin context for the provided file
-                    var context = CreatePluginContext(file);
+                    IPluginContext<TContract> context = CreatePluginContext(file);
 
                     // Register the created plugin context
                     Load(context);
