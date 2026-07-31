@@ -6,6 +6,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -127,7 +128,17 @@ namespace Mauren.Extensions.Plugins.Hosting
             try
             {
                 // Get a collection of all hosted services from the plugin context's service provider
-                List<IHostedService> hostedServices = pluginContext.Provider.GetServices<IHostedService>().ToList();
+                List<IHostedService> hostedServices = pluginContext.Provider.GetServices<IHostedService>()
+                    .Where((IHostedService hostedService) =>
+                    {
+                        // Get the Assembly in which the hosted service is defined
+                        Assembly serviceAssembly = hostedService.GetType().Assembly;
+                        // Get the Assembly Load Context's assemblies
+                        IEnumerable<Assembly> contextAssemblies = pluginContext.Context.Assemblies;
+
+                        return contextAssemblies.Contains(serviceAssembly);
+                    })
+                    .ToList();
 
                 // If no hosted services were found, return
                 if (hostedServices.Count == 0) return;
