@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.FileProviders;
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
@@ -19,29 +20,32 @@ namespace Mauren.Extensions.Plugins.Internal
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PluginLoadContext"/> <see langword="class"/>
-        /// with the specified <paramref name="assemblyPath"/> containing the path of the <see cref="Assembly"/>.
-        /// </summary>
-        /// 
-        /// <param name="assemblyPath">
-        /// A <see cref="String"/> containing the full path to the assembly DLL.
-        /// This path is used to initialize the <see cref="AssemblyDependencyResolver"/>,
+        /// with the specified <paramref name="fileInfo"/> representing the <see cref="Assembly"/> file.
+        ///</summary>
+        ///
+        /// <param name="fileInfo">
+        /// An <see cref="IFileInfo"/> representing the assembly DLL. 
+        /// Its physical path is used to initialize the <see cref="AssemblyDependencyResolver"/>,
         /// which helps locate assemblies and unmanaged DLLs for loading.
         /// </param>
         /// 
-        /// <param name="name">
-        /// The value for <see cref="AssemblyLoadContext.Name"/> in the new instance.
-        /// Its value can be null.
+        /// <param name="isCollectible">
+        /// <see langword="true"/> to enable <see cref="AssemblyLoadContext.Unload"/>;
+        /// otherwise, <see langword="false"/>.
+        /// The default value is <see langword="true"/> to allow the plugin to be unloaded.
         /// </param>
         /// 
-        /// <param name="isCollectible">
-        /// <see langword="true"/> to enable <see cref="AssemblyLoadContext.Unload"/>; otherwise, false.
-        /// The default value is <see langword="false"/> because there is a performance cost associated
-        /// with enabling unloading.
-        /// </param>
-        public PluginLoadContext(String assemblyPath, String? name, Boolean isCollectible = true) : base(name, isCollectible)
+        /// <exception cref="ArgumentException">
+        /// Thrown when the provided <paramref name="fileInfo"/> does not provide a valid physical path.
+        /// </exception>
+        public PluginLoadContext(IFileInfo fileInfo, String? name, Boolean isCollectible = true) : base(name, isCollectible)
         {
-            // Construct a new assembly dependency resolver with the path to the assembly.
-            _resolver = new(assemblyPath);
+            // If the file provider does not support physical paths
+            if (String.IsNullOrEmpty(fileInfo.PhysicalPath))
+                throw new ArgumentException("The provided file does not provide physical path information", nameof(fileInfo));
+
+            // Construct a new assembly dependency resolver with the physical path to the assembly file.
+            _resolver = new(fileInfo.PhysicalPath);
         }
 
         /// <inheritdoc/>

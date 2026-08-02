@@ -1,7 +1,6 @@
 ﻿using Mauren.Extensions.Plugins;
 using Mauren.Extensions.Plugins.Abstractions;
 using Mauren.Extensions.Plugins.Configuration;
-using Mauren.Extensions.Plugins.Internal;
 using Mauren.Extensions.Plugins.Strategies;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -9,7 +8,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

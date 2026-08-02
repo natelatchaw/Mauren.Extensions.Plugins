@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <Version>0.1.3</Version>
+    <Version>0.1.4</Version>
     <Authors>Nathan Latchaw</Authors>
     <RepositoryUrl>https://github.com/natelatchaw/Mauren.Extensions.Plugins</RepositoryUrl>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>

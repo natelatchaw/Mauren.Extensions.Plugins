@@ -1,5 +1,5 @@
-﻿using System;
-using System.IO;
+﻿using Microsoft.Extensions.FileProviders;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -18,12 +18,34 @@ namespace Mauren.Extensions.Plugins.Abstractions
     public interface IPluginLoader
     {
         /// <summary>
-        /// Asynchronously scans the specified directory for assemblies containing valid plugin 
-        /// types and initializes them in isolated contexts.
+        /// Asynchronously scans the root of the specified file provider for subdirectories, 
+        /// discovering and initializing plugins from each directory in isolated contexts.
         /// </summary>
         /// 
-        /// <param name="directory">
-        /// The directory to scan for assemblies.
+        /// <param name="fileProvider">
+        /// The <see cref="IFileProvider"/> used to access and read the root plugin directory.
+        /// </param>
+        /// 
+        /// <param name="cancellationToken">
+        /// A token to monitor for cancellation requests.
+        /// </param>
+        /// 
+        /// <returns>
+        /// A <see cref="Task"/> that represents the asynchronous scan and load operation across all discovered subdirectories.
+        /// </returns>
+        Task ScanAsync(IFileProvider fileProvider, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Asynchronously scans the specified path within the file provider for assemblies containing 
+        /// valid plugin types and initializes them in isolated contexts.
+        /// </summary>
+        /// 
+        /// <param name="fileProvider">
+        /// The <see cref="IFileProvider"/> used to access and read the plugin files.
+        /// </param>
+        /// 
+        /// <param name="subpath">
+        /// The relative directory path within the file provider to scan for assemblies.
         /// </param>
         /// 
         /// <param name="cancellationToken">
@@ -33,7 +55,7 @@ namespace Mauren.Extensions.Plugins.Abstractions
         /// <returns>
         /// A <see cref="Task"/> that represents the asynchronous scan and load operation.
         /// </returns>
-        Task ScanAsync(DirectoryInfo directory, CancellationToken cancellationToken = default);
+        Task ScanAsync(IFileProvider fileProvider, String subpath, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Asynchronously scans the specified file for an assembly containing valid plugin
@@ -56,7 +78,7 @@ namespace Mauren.Extensions.Plugins.Abstractions
         /// <exception cref="Exception">
         /// Thrown if the load operation failed for the provided <paramref name="fileInfo"/>.
         /// </exception>
-        Task<String> LoadAsync(FileInfo fileInfo, CancellationToken cancellationToken = default);
+        Task<String> LoadAsync(IFileInfo fileInfo, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Asynchronously unloads the isolated plugin context specified by its identifier.
